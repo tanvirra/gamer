@@ -1,0 +1,2332 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Pisla Rodstar</title>
+
+<style>
+:root{
+  --cyan:#45e8ff;
+  --red:#ef3152;
+  --panel:#07101ddd
+}
+
+[hidden]{
+  display:none!important
+}
+
+*{
+  box-sizing:border-box
+}
+
+body{
+  margin:0;
+  background:#030711;
+  color:#fff;
+  font-family:Inter,Segoe UI,Arial,sans-serif;
+  overflow:hidden
+}
+
+.app{
+  height:100vh;
+  display:grid;
+  place-items:center;
+  padding:12px
+}
+
+.shell{
+  width:min(1180px,100%);
+  border:1px solid #55eaff33;
+  border-radius:24px;
+  overflow:hidden;
+  background:#07101d;
+  box-shadow:0 20px 70px #000,0 0 35px #0cc4ff18
+}
+
+.top{
+  height:68px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:10px 18px;
+  background:#020610cc;
+  border-bottom:1px solid #ffffff18;
+  gap:12px
+}
+
+.brand{
+  font-weight:1000;
+  font-style:italic;
+  font-size:23px
+}
+
+.brand span{
+  color:var(--cyan)
+}
+
+.sub{
+  font-size:9px;
+  letter-spacing:.25em;
+  color:#8fa8b9
+}
+
+.stats{
+  display:flex;
+  gap:22px;
+  text-align:center
+}
+
+.stats small{
+  display:block;
+  color:#8292a5;
+  font-size:9px
+}
+
+.stats b{
+  font-size:14px
+}
+
+.actions{
+  display:flex;
+  gap:7px
+}
+
+button,input{
+  font:inherit
+}
+
+.icon,.primary,.secondary{
+  border:1px solid #ffffff20;
+  color:#fff;
+  background:#ffffff0d;
+  border-radius:12px;
+  cursor:pointer
+}
+
+.icon{
+  padding:9px
+}
+
+.primary{
+  padding:12px 22px;
+  font-weight:900;
+  background:linear-gradient(90deg,#ef3152,#b82fff)
+}
+
+.secondary{
+  padding:9px 16px
+}
+
+.game{
+  height:min(70vh,650px);
+  min-height:470px;
+  position:relative;
+  overflow:hidden
+}
+
+canvas{
+  width:100%;
+  height:100%;
+  display:block
+}
+
+.hud{
+  position:absolute;
+  top:12px;
+  left:12px;
+  right:12px;
+  display:flex;
+  align-items:flex-start;
+  gap:9px;
+  pointer-events:none
+}
+
+.pill{
+  background:#020611bb;
+  border:1px solid #ffffff18;
+  backdrop-filter:blur(8px);
+  border-radius:13px;
+  padding:8px 11px;
+  font-size:12px
+}
+
+.speed b{
+  font-size:20px;
+  color:var(--cyan)
+}
+
+.nos{
+  width:190px
+}
+
+.bar{
+  height:6px;
+  border-radius:5px;
+  background:#ffffff17;
+  overflow:hidden;
+  margin-top:5px
+}
+
+.fill{
+  height:100%;
+  background:linear-gradient(90deg,var(--cyan),#3367ff)
+}
+
+.rightHud{
+  margin-left:auto;
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+  justify-content:flex-end
+}
+
+.active{
+  color:#07111b!important;
+  background:var(--cyan)!important;
+  font-weight:900
+}
+
+.progress{
+  position:absolute;
+  top:75px;
+  left:25%;
+  width:50%;
+  height:5px;
+  background:#ffffff20;
+  border-radius:9px;
+  overflow:hidden
+}
+
+.overlay{
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  background:#020711c7;
+  backdrop-filter:blur(5px);
+  padding:22px;
+  text-align:center
+}
+
+.card{
+  max-width:600px;
+  width:100%
+}
+
+.card h1{
+  font-size:clamp(38px,8vw,72px);
+  line-height:.92;
+  margin:8px 0;
+  font-style:italic
+}
+
+.card p{
+  color:#b8c5d0
+}
+
+.name{
+  width:min(360px,100%);
+  padding:12px 14px;
+  background:#07111de8;
+  border:1px solid #ffffff25;
+  border-radius:12px;
+  color:#fff;
+  margin:8px
+}
+
+.keys{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  justify-content:center;
+  margin:16px 0
+}
+
+.keys kbd{
+  padding:6px 9px;
+  background:#ffffff12;
+  border:1px solid #ffffff1d;
+  border-radius:8px;
+  font-size:11px
+}
+
+.options{
+  position:absolute;
+  right:12px;
+  top:65px;
+  width:min(330px,calc(100% - 24px));
+  background:#06101aee;
+  border:1px solid #ffffff22;
+  border-radius:17px;
+  padding:16px;
+  z-index:30;
+  box-shadow:0 15px 50px #000
+}
+
+.options h3{
+  margin:0 0 10px
+}
+
+.optionRow{
+  display:flex;
+  justify-content:space-between;
+  border-bottom:1px solid #ffffff12;
+  padding:7px 0;
+  font-size:12px
+}
+
+.toast{
+  position:absolute;
+  top:105px;
+  left:50%;
+  transform:translateX(-50%);
+  padding:9px 14px;
+  border-radius:20px;
+  background:#0bdcf2;
+  color:#031018;
+  font-weight:900;
+  opacity:0;
+  transition:.2s;
+  pointer-events:none;
+  z-index:25
+}
+
+.toast.show{
+  opacity:1
+}
+
+.mobile{
+  display:none;
+  position:absolute;
+  bottom:13px;
+  left:12px;
+  right:12px;
+  justify-content:space-between;
+  align-items:end
+}
+
+.pad{
+  display:grid;
+  grid-template-columns:repeat(3,48px);
+  gap:5px
+}
+
+.touch{
+  height:48px;
+  border-radius:14px;
+  background:#ffffff20;
+  border:1px solid #ffffff30;
+  color:#fff;
+  font-weight:900;
+  touch-action:none
+}
+
+.round{
+  width:58px;
+  height:58px;
+  border-radius:50%;
+  background:#ef3152cc
+}
+
+.fly{
+  background:#36def0cc;
+  color:#07111b
+}
+
+.footer{
+  min-height:42px;
+  padding:9px 17px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  color:#92a4b5;
+  font-size:11px;
+  background:#020610cc;
+  border-top:1px solid #ffffff12
+}
+
+@media(max-width:700px){
+  .stats{display:none}
+  .mobile{display:flex}
+  .game{height:calc(100vh - 125px)}
+  .footer{display:none}
+  .nos{width:115px}
+  .pill{padding:6px 8px}
+  .brand{font-size:18px}
+  .top{height:60px;padding:8px}
+  .rightHud .profile{display:none}
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+<main class="shell">
+
+<header class="top">
+  <div>
+    <div class="brand">PISLA <span>RODSTAR</span></div>
+    <div class="sub">ELECTRIC ROCKET RACING</div>
+  </div>
+
+  <div class="stats">
+    <div><small>RACER</small><b id="racerHud">Racer One</b></div>
+    <div><small>LEVEL</small><b id="levelHud">1/10</b></div>
+    <div><small>SCORE</small><b id="scoreHud">0</b></div>
+    <div>
+      <small>LIVES</small>
+      <b id="livesHud" style="color:#ff4f68">♥♥♥</b>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button type="button" class="icon" id="optionsBtn">⚙ Options</button>
+    <button type="button" class="icon" id="soundBtn">🔊</button>
+    <button type="button" class="icon" id="restartBtn">↻</button>
+  </div>
+</header>
+
+<section class="game" id="game">
+<canvas id="canvas"></canvas>
+
+<div class="hud">
+  <div class="pill speed">
+    <b id="speedHud">0</b> KM/H
+  </div>
+
+  <div class="pill nos">
+    NOS <span id="nosText">100%</span>
+    <div class="bar">
+      <div class="fill" id="nosFill"></div>
+    </div>
+  </div>
+
+  <div class="rightHud">
+    <div class="pill profile">
+      🏁 <span id="racerMini">Racer One</span>
+    </div>
+    <div class="pill" id="flightHud">GROUND</div>
+    <div class="pill" id="muskHud">MUSK MODE OFF</div>
+  </div>
+</div>
+
+<div class="progress">
+  <div class="fill" id="progressFill"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="options" id="options" hidden>
+  <h3>Controls &amp; Profile</h3>
+
+  <input
+    class="name"
+    id="nameInput"
+    maxlength="22"
+    placeholder="Enter racer name"
+  >
+
+  <button type="button" class="primary" id="saveName">
+    SAVE RACER
+  </button>
+
+  <div class="optionRow">
+    <span>Accelerate to 200 KM/H</span>
+    <kbd>→</kbd>
+  </div>
+
+  <div class="optionRow">
+    <span>Brake or reverse tilt</span>
+    <kbd>← / ↓</kbd>
+  </div>
+
+  <div class="optionRow">
+    <span>Jump</span>
+    <kbd>J / Space</kbd>
+  </div>
+
+  <div class="optionRow">
+    <span>Rocket flight toggle</span>
+    <kbd>F</kbd>
+  </div>
+
+  <div class="optionRow">
+    <span>Flight altitude</span>
+    <kbd>↑ / ↓</kbd>
+  </div>
+
+  <div class="optionRow">
+    <span>NOS boost</span>
+    <kbd>N / Shift</kbd>
+  </div>
+
+  <div class="optionRow">
+    <span>Musk protection toggle</span>
+    <kbd>Ctrl + M</kbd>
+  </div>
+
+  <div class="optionRow">
+    <span>Restart level</span>
+    <kbd>R</kbd>
+  </div>
+</div>
+
+<div class="overlay" id="menu">
+  <div class="card">
+    <p style="color:#44e6ff;letter-spacing:.3em">
+      TEN WORLDS · ONE LEGEND
+    </p>
+
+    <h1>OWN THE SKY.</h1>
+
+    <p>
+      Race across more than 20 screens, jump hazards,
+      fly with four-wheel rocket jets, collect energy,
+      and reach the finish portal.
+    </p>
+
+    <input
+      class="name"
+      id="startName"
+      maxlength="22"
+      value="Racer One"
+    >
+
+    <br>
+
+    <button type="button" class="primary" id="startBtn">
+      START ENGINE
+    </button>
+
+    <button type="button" class="secondary" id="menuOptions">
+      VIEW KEYS
+    </button>
+
+    <div class="keys">
+      <kbd>→ Accelerate</kbd>
+      <kbd>J Jump</kbd>
+      <kbd>F Fly</kbd>
+      <kbd>N NOS</kbd>
+      <kbd>Ctrl + M Musk Mode</kbd>
+      <kbd>R Restart</kbd>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="result" hidden>
+  <div class="card">
+    <p id="resultLead"></p>
+    <h1 id="resultTitle"></h1>
+    <p id="resultText"></p>
+    <button type="button" class="primary" id="resultBtn"></button>
+  </div>
+</div>
+
+<div class="mobile">
+  <div class="pad">
+    <i></i>
+
+    <button type="button" class="touch" data-key="arrowup">↑</button>
+
+    <i></i>
+
+    <button type="button" class="touch" data-key="arrowleft">←</button>
+
+    <button type="button" class="touch" data-key="arrowdown">↓</button>
+
+    <button type="button" class="touch" data-key="arrowright">→</button>
+  </div>
+
+  <div>
+    <button
+      type="button"
+      class="touch round"
+      data-key="j"
+    >
+      JUMP
+    </button>
+
+    <button
+      type="button"
+      class="touch round fly"
+      id="flyTouch"
+    >
+      FLY
+    </button>
+
+    <button
+      type="button"
+      class="touch round fly"
+      data-key="n"
+    >
+      NOS
+    </button>
+  </div>
+</div>
+</section>
+
+<footer class="footer">
+  <span id="levelName">Neon Arrival · Level 1</span>
+
+  <span>
+    Press F to toggle rocket flight.
+    Use ↑ and ↓ to change altitude.
+  </span>
+</footer>
+
+</main>
+</div>
+
+<script>
+(() => {
+"use strict";
+
+const levels = [
+  ["Neon Arrival",18000,2.2,.55,"#16547d"],
+  ["Desert Pulse",19000,2.8,.68,"#804451"],
+  ["Cyber Harbor",20000,3.1,.72,"#126174"],
+  ["Aurora Run",21000,3.4,.75,"#463190"],
+  ["Solar Canyon",22000,3.7,.78,"#904332"],
+  ["Skyline Zero",23000,4,.8,"#194978"],
+  ["Ion Storm",24000,4.3,.82,"#4b2d79"],
+  ["Lunar Circuit",25000,4.6,.68,"#303d66"],
+  ["Quantum Rush",26000,4.9,.86,"#68224e"],
+  ["Roadstar Legend",28000,5.2,.88,"#78172f"]
+];
+
+const $ = id => document.getElementById(id);
+const canvas = $("canvas");
+const ctx = canvas.getContext("2d");
+const keys = {};
+
+const store = {
+  get(key, fallback) {
+    try {
+      return localStorage.getItem(key) || fallback;
+    } catch (error) {
+      return fallback;
+    }
+  },
+
+  set(key, value) {
+    try {
+      localStorage.setItem(key, value);
+    } catch (error) {
+      // Game still works when local storage is unavailable.
+    }
+  }
+};
+
+let animationFrame;
+let lastTime = 0;
+let gameState = null;
+let sound = true;
+let racer = store.get("pislaRacer", "Racer One");
+let toastTimer;
+
+$("startName").value = racer;
+$("nameInput").value = racer;
+updateRacer();
+
+function updateRacer() {
+  $("racerHud").textContent = racer;
+  $("racerMini").textContent = racer;
+}
+
+function beep(
+  frequency = 440,
+  duration = 0.08,
+  type = "sine",
+  volume = 0.035
+) {
+  if (!sound) return;
+
+  try {
+    const AudioContextClass =
+      window.AudioContext || window.webkitAudioContext;
+
+    beep.audioContext =
+      beep.audioContext || new AudioContextClass();
+
+    const audioContext = beep.audioContext;
+    const oscillator = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+
+    oscillator.type = type;
+    oscillator.frequency.value = frequency;
+    gain.gain.value = volume;
+
+    oscillator.connect(gain);
+    gain.connect(audioContext.destination);
+
+    gain.gain.exponentialRampToValueAtTime(
+      0.001,
+      audioContext.currentTime + duration
+    );
+
+    oscillator.start();
+    oscillator.stop(audioContext.currentTime + duration);
+  } catch (error) {
+    // Sound is optional.
+  }
+}
+
+function showMessage(text) {
+  $("toast").textContent = text;
+  $("toast").classList.add("show");
+
+  clearTimeout(toastTimer);
+
+  toastTimer = setTimeout(() => {
+    $("toast").classList.remove("show");
+  }, 1200);
+}
+
+function seeded(number) {
+  const value =
+    Math.sin(number * 999.17) * 43758.5453;
+
+  return value - Math.floor(value);
+}
+
+function createWorld(levelIndex) {
+  const level = levels[levelIndex];
+  const obstacles = [];
+  const coins = [];
+
+  let position =
+    levelIndex === 0 ? 1100 : 700;
+
+  let seed =
+    levelIndex * 41 + 7;
+
+  while (position < level[1] - 600) {
+    const random = seeded(seed++);
+
+    let type =
+      random > 0.78
+        ? "ramp"
+        : random > 0.53
+          ? "barrier"
+          : random > 0.25
+            ? "crate"
+            : "drone";
+
+    if (
+      levelIndex === 0 &&
+      obstacles.length < 5
+    ) {
+      type =
+        obstacles.length % 2
+          ? "crate"
+          : "ramp";
+    }
+
+    obstacles.push({
+      x: position,
+      type,
+      width:
+        type === "ramp" ? 110 : 52,
+      height:
+        type === "barrier" ? 62 : 44,
+      passed: false
+    });
+
+    const coinCount =
+      type === "ramp" ? 6 : 4;
+
+    for (
+      let coinIndex = 0;
+      coinIndex < coinCount;
+      coinIndex++
+    ) {
+      coins.push({
+        x:
+          position -
+          20 +
+          coinIndex * 34,
+
+        y:
+          335 -
+          Math.sin(
+            coinIndex /
+              (coinCount - 1) *
+              Math.PI
+          ) *
+            70,
+
+        collected: false
+      });
+    }
+
+    position +=
+      (levelIndex === 0 ? 650 : 350) +
+      seeded(seed++) * 260 -
+      levelIndex * 7;
+  }
+
+  return {
+    obstacles,
+    coins
+  };
+}
+
+function initialiseGame(
+  levelIndex = 0,
+  state = "playing"
+) {
+  const world =
+    createWorld(levelIndex);
+
+  gameState = {
+    level: levelIndex,
+    state,
+    time: 0,
+    distance: 0,
+    camera: 0,
+    speed: 0,
+    accelerationHold: 0,
+    nos: 100,
+    lives: 3,
+    score: levelIndex * 1000,
+    combo: 1,
+    flying: false,
+    muskMode: false,
+    particles: [],
+    stars: [],
+    obstacles: world.obstacles,
+    coins: world.coins,
+
+    car: {
+      x: 155,
+      y: 354,
+      velocityY: 0,
+      angle: 0,
+      grounded: true,
+      invincible: 0
+    }
+  };
+
+  for (
+    let starIndex = 0;
+    starIndex < 90;
+    starIndex++
+  ) {
+    gameState.stars.push({
+      x:
+        seeded(
+          starIndex +
+          levelIndex * 100
+        ) * 1500,
+
+      y:
+        seeded(
+          starIndex * 2 + 3
+        ) * 285,
+
+      size:
+        0.5 +
+        seeded(
+          starIndex * 3
+        ) * 2
+    });
+  }
+
+  updateHud();
+}
+
+function updateHud() {
+  if (!gameState) return;
+
+  const level =
+    levels[gameState.level];
+
+  $("racerHud").textContent = racer;
+  $("racerMini").textContent = racer;
+
+  $("levelHud").textContent =
+    `${gameState.level + 1}/10`;
+
+  $("scoreHud").textContent =
+    Math.round(
+      gameState.score
+    ).toLocaleString();
+
+  $("livesHud").textContent =
+    "♥".repeat(
+      Math.max(0, gameState.lives)
+    );
+
+  $("speedHud").textContent =
+    Math.min(
+      200,
+      Math.round(
+        gameState.speed * 13
+      )
+    );
+
+  $("nosText").textContent =
+    `${Math.round(gameState.nos)}%`;
+
+  $("nosFill").style.width =
+    `${Math.max(0, gameState.nos)}%`;
+
+  $("progressFill").style.width =
+    `${
+      Math.min(
+        100,
+        gameState.distance /
+          level[1] *
+          100
+      )
+    }%`;
+
+  $("flightHud").textContent =
+    gameState.flying
+      ? "ROCKET FLIGHT"
+      : "GROUND";
+
+  $("flightHud").className =
+    `pill${
+      gameState.flying
+        ? " active"
+        : ""
+    }`;
+
+  $("muskHud").textContent =
+    gameState.muskMode
+      ? "MUSK MODE ON"
+      : "MUSK MODE OFF";
+
+  $("muskHud").className =
+    `pill${
+      gameState.muskMode
+        ? " active"
+        : ""
+    }`;
+
+  $("levelName").textContent =
+    `${level[0]} · Level ${
+      gameState.level + 1
+    }`;
+}
+
+function createParticle(
+  x,
+  y,
+  color,
+  velocityX,
+  velocityY,
+  size = 4
+) {
+  gameState.particles.push({
+    x,
+    y,
+    color,
+    velocityX,
+    velocityY,
+    life: 1,
+    size
+  });
+}
+
+function toggleFlight() {
+  if (
+    !gameState ||
+    gameState.state !== "playing"
+  ) {
+    return;
+  }
+
+  gameState.flying =
+    !gameState.flying;
+
+  gameState.car.grounded = false;
+
+  gameState.car.velocityY =
+    gameState.flying ? -5 : 2;
+
+  beep(
+    gameState.flying ? 760 : 330,
+    0.18,
+    "sawtooth"
+  );
+
+  showMessage(
+    gameState.flying
+      ? "ROCKET FLIGHT ACTIVATED"
+      : "LANDING MODE"
+  );
+
+  updateHud();
+}
+
+function toggleMuskMode() {
+  if (
+    !gameState ||
+    gameState.state !== "playing"
+  ) {
+    return;
+  }
+
+  gameState.muskMode =
+    !gameState.muskMode;
+
+  beep(
+    gameState.muskMode ? 900 : 240,
+    0.2,
+    "square"
+  );
+
+  showMessage(
+    gameState.muskMode
+      ? "MUSK MODE: INDESTRUCTIBLE"
+      : "MUSK MODE OFF"
+  );
+
+  updateHud();
+}
+
+function startGame() {
+  $("result").hidden = true;
+  $("options").hidden = true;
+
+  if (document.activeElement) {
+    document.activeElement.blur();
+  }
+
+  racer =
+    $("startName").value.trim() ||
+    "Racer One";
+
+  racer =
+    racer.slice(0, 22);
+
+  store.set("pislaRacer", racer);
+
+  $("nameInput").value = racer;
+
+  updateRacer();
+  initialiseGame(0, "playing");
+
+  $("menu").hidden = true;
+
+  beep(520, 0.1);
+
+  setTimeout(() => {
+    beep(780, 0.12);
+  }, 100);
+}
+
+function restartGame() {
+  if (!gameState) return;
+
+  const level =
+    gameState.level;
+
+  initialiseGame(
+    level,
+    "playing"
+  );
+
+  $("result").hidden = true;
+
+  showMessage("LEVEL RESTARTED");
+}
+
+function finishLevel() {
+  if (
+    !gameState ||
+    gameState.state !== "playing"
+  ) {
+    return;
+  }
+
+  gameState.score +=
+    1000 +
+    gameState.lives * 300;
+
+  gameState.state =
+    gameState.level === 9
+      ? "won"
+      : "complete";
+
+  $("result").hidden = false;
+
+  $("resultLead").textContent =
+    gameState.state === "won"
+      ? "ROADSTAR LEGEND"
+      : "LEVEL COMPLETE";
+
+  $("resultTitle").textContent =
+    gameState.state === "won"
+      ? "SKY CONQUERED!"
+      : levels[gameState.level][0];
+
+  $("resultText").textContent =
+    `${racer} scored ${
+      Math.round(
+        gameState.score
+      ).toLocaleString()
+    } points`;
+
+  $("resultBtn").textContent =
+    gameState.state === "won"
+      ? "PLAY AGAIN"
+      : "NEXT LEVEL";
+
+  beep(850, 0.2);
+}
+
+function showGameOver() {
+  if (
+    !gameState ||
+    gameState.state !== "playing"
+  ) {
+    return;
+  }
+
+  gameState.state = "gameover";
+
+  $("result").hidden = false;
+  $("resultLead").textContent =
+    "SYSTEM OFFLINE";
+  $("resultTitle").textContent =
+    "CRASHED";
+  $("resultText").textContent =
+    `Score: ${
+      Math.round(
+        gameState.score
+      ).toLocaleString()
+    }`;
+  $("resultBtn").textContent =
+    "RETRY LEVEL";
+}
+
+function update(deltaTime) {
+  if (
+    !gameState ||
+    gameState.state !== "playing"
+  ) {
+    return;
+  }
+
+  const level =
+    levels[gameState.level];
+
+  const car =
+    gameState.car;
+
+  const accelerating =
+    keys.arrowright;
+
+  const braking =
+    keys.arrowleft;
+
+  const nosActive =
+    (keys.n || keys.shift) &&
+    gameState.nos > 0;
+
+  gameState.time += deltaTime;
+
+  if (accelerating) {
+    gameState.accelerationHold =
+      Math.min(
+        650,
+        gameState.accelerationHold +
+          deltaTime
+      );
+  } else {
+    gameState.accelerationHold =
+      Math.max(
+        0,
+        gameState.accelerationHold -
+          deltaTime * 1.6
+      );
+  }
+
+  const targetSpeed =
+    accelerating
+      ? Math.min(
+          15.38,
+          level[2] +
+            gameState.accelerationHold *
+              0.026
+        )
+      : level[2];
+
+  gameState.speed +=
+    (targetSpeed -
+      gameState.speed) *
+    0.016 *
+    deltaTime;
+
+  if (
+    braking &&
+    !gameState.flying
+  ) {
+    gameState.speed =
+      Math.max(
+        0,
+        gameState.speed -
+          0.16 * deltaTime
+      );
+  }
+
+  if (nosActive) {
+    gameState.speed =
+      Math.min(
+        17.8,
+        gameState.speed +
+          0.12 * deltaTime
+      );
+
+    gameState.nos =
+      Math.max(
+        0,
+        gameState.nos -
+          0.48 * deltaTime
+      );
+
+    createParticle(
+      car.x - 58,
+      car.y + 8,
+      "#55eaff",
+      -8 - Math.random() * 5,
+      0,
+      4
+    );
+  } else {
+    gameState.nos =
+      Math.min(
+        100,
+        gameState.nos +
+          0.055 * deltaTime
+      );
+  }
+
+  gameState.distance +=
+    gameState.speed * deltaTime;
+
+  gameState.camera =
+    Math.max(
+      0,
+      gameState.distance - 145
+    );
+
+  if (
+    (keys.j || keys[" "]) &&
+    car.grounded &&
+    !gameState.flying
+  ) {
+    car.velocityY = -12.5;
+    car.grounded = false;
+
+    [-43,-29,29,43].forEach(
+      wheelX => {
+        createParticle(
+          car.x + wheelX,
+          car.y + 25,
+          "#eafcff",
+          (Math.random() - 0.5) * 2,
+          8 + Math.random() * 5,
+          5
+        );
+      }
+    );
+
+    createParticle(
+      car.x - 60,
+      car.y + 8,
+      "#55eaff",
+      -10,
+      0,
+      6
+    );
+
+    keys.j = false;
+    keys[" "] = false;
+
+    beep(320, 0.08, "sawtooth");
+  }
+
+  if (gameState.flying) {
+    car.grounded = false;
+
+    const targetY =
+      keys.arrowup
+        ? 95
+        : keys.arrowdown
+          ? 325
+          : 205;
+
+    car.velocityY +=
+      (targetY - car.y) *
+      0.0035 *
+      deltaTime;
+
+    car.velocityY *= 0.94;
+
+    car.y =
+      Math.max(
+        75,
+        Math.min(
+          345,
+          car.y +
+            car.velocityY *
+              deltaTime
+        )
+      );
+
+    let targetAngle = 0;
+
+    if (keys.arrowup) {
+      targetAngle = -0.12;
+    } else if (keys.arrowdown) {
+      targetAngle = 0.12;
+    }
+
+    car.angle +=
+      (targetAngle -
+        car.angle) *
+      0.08;
+
+    [-43,-29,29,43].forEach(
+      wheelX => {
+        createParticle(
+          car.x + wheelX,
+          car.y + 24,
+          "#eafcff",
+          (Math.random() - 0.5) * 2,
+          7 + Math.random() * 5,
+          4
+        );
+      }
+    );
+
+    createParticle(
+      car.x - 60,
+      car.y + 7,
+      "#43ddff",
+      -11 - Math.random() * 5,
+      (Math.random() - 0.5) * 2,
+      5
+    );
+  } else {
+    car.velocityY +=
+      level[3] * deltaTime;
+
+    car.y +=
+      car.velocityY * deltaTime;
+
+    if (!car.grounded) {
+      if (keys.arrowright) {
+        car.angle +=
+          0.025 * deltaTime;
+      }
+
+      if (keys.arrowleft) {
+        car.angle -=
+          0.025 * deltaTime;
+      }
+
+      car.angle *= 0.993;
+    }
+  }
+
+  if (
+    car.y >= 354 &&
+    !gameState.flying
+  ) {
+    if (
+      !car.grounded &&
+      Math.abs(car.angle) > 1.15 &&
+      !gameState.muskMode
+    ) {
+      gameState.lives -= 1;
+
+      gameState.score =
+        Math.max(
+          0,
+          gameState.score - 250
+        );
+
+      showMessage("HARD LANDING");
+      beep(90, 0.25, "sawtooth");
+    }
+
+    car.y = 354;
+    car.velocityY = 0;
+    car.grounded = true;
+    car.angle *= 0.55;
+  }
+
+  car.invincible =
+    Math.max(
+      0,
+      car.invincible -
+        deltaTime
+    );
+
+  gameState.obstacles.forEach(
+    obstacle => {
+      const obstacleX =
+        obstacle.x -
+        gameState.camera;
+
+      const obstacleY =
+        obstacle.type === "drone"
+          ? 292 +
+            Math.sin(
+              gameState.time *
+                0.05 +
+                obstacle.x
+            ) *
+              22
+          : 388 -
+            obstacle.height;
+
+      const collision =
+        obstacleX <
+          car.x + 52 &&
+        obstacleX +
+          obstacle.width >
+          car.x - 49 &&
+        car.y + 29 >
+          obstacleY &&
+        car.y - 16 <
+          obstacleY +
+            obstacle.height;
+
+      if (
+        collision &&
+        car.invincible <= 0 &&
+        obstacle.type !== "ramp" &&
+        !gameState.muskMode
+      ) {
+        car.invincible = 90;
+        car.velocityY = -7;
+        car.grounded = false;
+
+        gameState.lives -= 1;
+        gameState.score =
+          Math.max(
+            0,
+            gameState.score - 300
+          );
+
+        gameState.speed *= 0.5;
+
+        for (
+          let particleIndex = 0;
+          particleIndex < 22;
+          particleIndex++
+        ) {
+          createParticle(
+            car.x + 35,
+            car.y,
+            "#ff4665",
+            (Math.random() - 0.5) * 8,
+            (Math.random() - 0.7) * 8,
+            5
+          );
+        }
+
+        showMessage("IMPACT!");
+        beep(85, 0.25, "square");
+      }
+
+      if (
+        obstacle.type === "ramp" &&
+        obstacleX <
+          car.x + 45 &&
+        obstacleX +
+          obstacle.width >
+          car.x - 35 &&
+        car.grounded
+      ) {
+        car.velocityY = -12.5;
+        car.grounded = false;
+        gameState.score += 150;
+      }
+    }
+  );
+
+  gameState.coins.forEach(
+    coin => {
+      const coinX =
+        coin.x -
+        gameState.camera;
+
+      if (
+        !coin.collected &&
+        Math.hypot(
+          coinX - car.x,
+          coin.y - car.y
+        ) < 42
+      ) {
+        coin.collected = true;
+
+        gameState.score +=
+          75 * gameState.combo;
+
+        gameState.nos =
+          Math.min(
+            100,
+            gameState.nos + 5
+          );
+
+        beep(700, 0.04);
+      }
+    }
+  );
+
+  gameState.particles.forEach(
+    particle => {
+      particle.x +=
+        particle.velocityX *
+        deltaTime;
+
+      particle.y +=
+        particle.velocityY *
+        deltaTime;
+
+      particle.velocityY +=
+        0.18 * deltaTime;
+
+      particle.life -=
+        0.025 * deltaTime;
+    }
+  );
+
+  gameState.particles =
+    gameState.particles.filter(
+      particle =>
+        particle.life > 0
+    );
+
+  if (
+    gameState.distance >= level[1] &&
+    gameState.state === "playing"
+  ) {
+    finishLevel();
+  }
+
+  if (
+    gameState.lives <= 0 &&
+    !gameState.muskMode &&
+    gameState.state === "playing"
+  ) {
+    showGameOver();
+  }
+
+  updateHud();
+}
+
+function draw() {
+  const width =
+    canvas.clientWidth;
+
+  const height =
+    canvas.clientHeight;
+
+  if (!gameState) return;
+
+  const level =
+    levels[gameState.level];
+
+  const gradient =
+    ctx.createLinearGradient(
+      0,
+      0,
+      0,
+      height
+    );
+
+  gradient.addColorStop(
+    0,
+    "#040817"
+  );
+
+  gradient.addColorStop(
+    0.65,
+    level[4]
+  );
+
+  gradient.addColorStop(
+    1,
+    "#07111d"
+  );
+
+  ctx.fillStyle = gradient;
+  ctx.fillRect(
+    0,
+    0,
+    width,
+    height
+  );
+
+  ctx.fillStyle = "#dffaff";
+
+  gameState.stars.forEach(
+    star => {
+      let starX =
+        (
+          star.x -
+          gameState.camera *
+            0.08
+        ) %
+        (width + 60);
+
+      if (starX < 0) {
+        starX +=
+          width + 60;
+      }
+
+      ctx.beginPath();
+
+      ctx.arc(
+        starX,
+        star.y,
+        star.size,
+        0,
+        Math.PI * 2
+      );
+
+      ctx.fill();
+    }
+  );
+
+  ctx.fillStyle =
+    "#06101dcc";
+
+  ctx.beginPath();
+  ctx.moveTo(0, height);
+  ctx.lineTo(0, 290);
+
+  for (
+    let buildingX = 0;
+    buildingX <
+      width + 80;
+    buildingX += 80
+  ) {
+    const buildingHeight =
+      25 +
+      seeded(
+        buildingX / 80 +
+        gameState.level * 9
+      ) *
+        105;
+
+    ctx.lineTo(
+      buildingX,
+      290 - buildingHeight
+    );
+
+    ctx.lineTo(
+      buildingX + 65,
+      290
+    );
+  }
+
+  ctx.lineTo(
+    width,
+    height
+  );
+
+  ctx.fill();
+
+  ctx.fillStyle = "#091522";
+
+  ctx.fillRect(
+    0,
+    393,
+    width,
+    height - 393
+  );
+
+  ctx.fillStyle = "#26384b";
+
+  ctx.fillRect(
+    0,
+    393,
+    width,
+    7
+  );
+
+  ctx.fillStyle = "#45e8ff";
+
+  for (
+    let roadX =
+      -(gameState.camera * 2) %
+      125;
+    roadX < width;
+    roadX += 125
+  ) {
+    ctx.fillRect(
+      roadX,
+      397,
+      70,
+      3
+    );
+  }
+
+  const finishX =
+    level[1] -
+    gameState.camera;
+
+  if (
+    finishX > -100 &&
+    finishX <
+      width + 100
+  ) {
+    ctx.strokeStyle =
+      "#ffd84a";
+
+    ctx.lineWidth = 8;
+    ctx.shadowColor =
+      "#ffd84a";
+    ctx.shadowBlur = 25;
+
+    ctx.strokeRect(
+      finishX,
+      210,
+      30,
+      183
+    );
+
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = "#fff";
+    ctx.font =
+      "bold 15px Arial";
+    ctx.textAlign =
+      "center";
+
+    ctx.fillText(
+      "FINISH",
+      finishX + 15,
+      195
+    );
+  }
+
+  gameState.coins.forEach(
+    coin => {
+      if (coin.collected) {
+        return;
+      }
+
+      const coinX =
+        coin.x -
+        gameState.camera;
+
+      if (
+        coinX > -20 &&
+        coinX <
+          width + 20
+      ) {
+        ctx.fillStyle =
+          "#f7c62a";
+
+        ctx.beginPath();
+
+        ctx.arc(
+          coinX,
+          coin.y,
+          9,
+          0,
+          Math.PI * 2
+        );
+
+        ctx.fill();
+      }
+    }
+  );
+
+  gameState.obstacles.forEach(
+    obstacle => {
+      const obstacleX =
+        obstacle.x -
+        gameState.camera;
+
+      if (
+        obstacleX < -150 ||
+        obstacleX >
+          width + 100
+      ) {
+        return;
+      }
+
+      if (
+        obstacle.type === "ramp"
+      ) {
+        ctx.fillStyle =
+          "#19374b";
+
+        ctx.strokeStyle =
+          "#42e5ff";
+
+        ctx.lineWidth = 3;
+
+        ctx.beginPath();
+        ctx.moveTo(
+          obstacleX,
+          393
+        );
+        ctx.lineTo(
+          obstacleX + 110,
+          393
+        );
+        ctx.lineTo(
+          obstacleX + 110,
+          344
+        );
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+      } else if (
+        obstacle.type === "drone"
+      ) {
+        const droneY =
+          292 +
+          Math.sin(
+            gameState.time *
+              0.05 +
+              obstacle.x
+          ) *
+            22;
+
+        ctx.fillStyle =
+          "#ff3b69";
+
+        ctx.fillRect(
+          obstacleX,
+          droneY,
+          obstacle.width,
+          16
+        );
+      } else {
+        ctx.fillStyle =
+          obstacle.type ===
+          "barrier"
+            ? "#ee3455"
+            : "#a75b28";
+
+        ctx.fillRect(
+          obstacleX,
+          393 -
+            obstacle.height,
+          obstacle.width,
+          obstacle.height
+        );
+      }
+    }
+  );
+
+  const car =
+    gameState.car;
+
+  const nosActive =
+    (keys.n ||
+      keys.shift) &&
+    gameState.nos > 0;
+
+  ctx.save();
+  ctx.translate(
+    car.x,
+    car.y
+  );
+
+  ctx.rotate(
+    car.angle
+  );
+
+  if (gameState.muskMode) {
+    ctx.strokeStyle =
+      "#4deaff";
+
+    ctx.lineWidth = 3;
+    ctx.shadowColor =
+      "#4deaff";
+    ctx.shadowBlur = 20;
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+      0,
+      4,
+      76,
+      47,
+      0,
+      0,
+      Math.PI * 2
+    );
+
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+  }
+
+  if (
+    gameState.flying ||
+    nosActive
+  ) {
+    ctx.fillStyle =
+      "#45e8ff";
+
+    ctx.shadowColor =
+      "#45e8ff";
+
+    ctx.shadowBlur = 20;
+
+    ctx.beginPath();
+    ctx.moveTo(-55, 9);
+    ctx.lineTo(
+      -105 -
+        Math.random() * 22,
+      1
+    );
+    ctx.lineTo(-55, 18);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.shadowBlur = 0;
+  }
+
+  if (gameState.flying) {
+    [-43,-29,29,43].forEach(
+      wheelX => {
+        ctx.fillStyle = "#fff";
+        ctx.shadowColor =
+          "#4deaff";
+        ctx.shadowBlur = 20;
+
+        ctx.beginPath();
+        ctx.moveTo(
+          wheelX - 5,
+          22
+        );
+        ctx.lineTo(
+          wheelX,
+          60 +
+            Math.random() * 18
+        );
+        ctx.lineTo(
+          wheelX + 5,
+          22
+        );
+        ctx.closePath();
+        ctx.fill();
+      }
+    );
+
+    ctx.shadowBlur = 0;
+  }
+
+  ctx.shadowColor =
+    "#ef3152";
+
+  ctx.shadowBlur = 15;
+  ctx.fillStyle = "#d91f3d";
+
+  ctx.beginPath();
+  ctx.moveTo(-59, 10);
+
+  ctx.quadraticCurveTo(
+    -45,
+    -18,
+    -10,
+    -22
+  );
+
+  ctx.quadraticCurveTo(
+    25,
+    -24,
+    56,
+    2
+  );
+
+  ctx.lineTo(59, 18);
+
+  ctx.quadraticCurveTo(
+    22,
+    27,
+    -49,
+    21
+  );
+
+  ctx.closePath();
+  ctx.fill();
+  ctx.shadowBlur = 0;
+
+  ctx.fillStyle = "#111c2a";
+
+  ctx.beginPath();
+  ctx.moveTo(-21, -20);
+
+  ctx.quadraticCurveTo(
+    0,
+    -39,
+    29,
+    -15
+  );
+
+  ctx.lineTo(38, -3);
+  ctx.lineTo(-30, -4);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.fillStyle =
+    "#8be8ff99";
+
+  ctx.beginPath();
+  ctx.moveTo(-15, -18);
+
+  ctx.quadraticCurveTo(
+    3,
+    -31,
+    24,
+    -15
+  );
+
+  ctx.lineTo(31, -6);
+  ctx.lineTo(-24, -6);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.fillStyle = "#fff";
+  ctx.font =
+    "bold 7px Arial";
+
+  ctx.textAlign =
+    "center";
+
+  ctx.fillText(
+    "PISLA ROADSTAR",
+    0,
+    9
+  );
+
+  ctx.fillStyle = "#05080c";
+
+  [-38,38].forEach(
+    wheelX => {
+      ctx.beginPath();
+
+      ctx.arc(
+        wheelX,
+        19,
+        13,
+        0,
+        Math.PI * 2
+      );
+
+      ctx.fill();
+
+      ctx.strokeStyle =
+        "#aac1cf";
+
+      ctx.lineWidth = 3;
+
+      ctx.beginPath();
+
+      ctx.arc(
+        wheelX,
+        19,
+        7,
+        0,
+        Math.PI * 2
+      );
+
+      ctx.stroke();
+    }
+  );
+
+  ctx.restore();
+
+  gameState.particles.forEach(
+    particle => {
+      ctx.globalAlpha =
+        particle.life;
+
+      ctx.fillStyle =
+        particle.color;
+
+      ctx.fillRect(
+        particle.x,
+        particle.y,
+        particle.size,
+        particle.size
+      );
+    }
+  );
+
+  ctx.globalAlpha = 1;
+}
+
+function gameLoop(time) {
+  const deltaTime =
+    Math.min(
+      (
+        time -
+        lastTime
+      ) /
+        16.67 || 1,
+      2
+    );
+
+  lastTime = time;
+
+  update(deltaTime);
+  draw();
+
+  animationFrame =
+    requestAnimationFrame(
+      gameLoop
+    );
+}
+
+function resize() {
+  const rectangle =
+    canvas.getBoundingClientRect();
+
+  const scale =
+    Math.min(
+      window.devicePixelRatio ||
+        1,
+      2
+    );
+
+  canvas.width =
+    rectangle.width * scale;
+
+  canvas.height =
+    rectangle.height * scale;
+
+  ctx.setTransform(
+    scale,
+    0,
+    0,
+    scale,
+    0,
+    0
+  );
+}
+
+window.addEventListener(
+  "resize",
+  resize
+);
+
+window.addEventListener(
+  "keydown",
+  event => {
+    const key =
+      event.key.toLowerCase();
+
+    if (
+      [
+        "arrowup",
+        "arrowdown",
+        "arrowleft",
+        "arrowright",
+        "j",
+        "f",
+        "r",
+        "n",
+        "shift",
+        " "
+      ].includes(key)
+    ) {
+      event.preventDefault();
+    }
+
+    keys[key] = true;
+
+    if (key === "r") {
+      restartGame();
+    }
+
+    if (
+      key === "f" &&
+      !event.repeat
+    ) {
+      toggleFlight();
+    }
+
+    if (
+      event.ctrlKey &&
+      key === "m" &&
+      !event.repeat
+    ) {
+      event.preventDefault();
+      toggleMuskMode();
+    }
+  }
+);
+
+window.addEventListener(
+  "keyup",
+  event => {
+    keys[
+      event.key.toLowerCase()
+    ] = false;
+  }
+);
+
+$("startBtn").addEventListener(
+  "click",
+  startGame
+);
+
+$("restartBtn").addEventListener(
+  "click",
+  restartGame
+);
+
+$("soundBtn").addEventListener(
+  "click",
+  () => {
+    sound = !sound;
+
+    $("soundBtn").textContent =
+      sound ? "🔊" : "🔇";
+  }
+);
+
+function toggleOptions() {
+  $("options").hidden =
+    !$("options").hidden;
+}
+
+$("optionsBtn").addEventListener(
+  "click",
+  toggleOptions
+);
+
+$("menuOptions").addEventListener(
+  "click",
+  toggleOptions
+);
+
+$("saveName").addEventListener(
+  "click",
+  () => {
+    racer =
+      $("nameInput").value.trim() ||
+      "Racer One";
+
+    racer =
+      racer.slice(0, 22);
+
+    store.set(
+      "pislaRacer",
+      racer
+    );
+
+    $("startName").value =
+      racer;
+
+    updateRacer();
+
+    $("options").hidden =
+      true;
+
+    showMessage(
+      "RACER PROFILE SAVED"
+    );
+  }
+);
+
+$("resultBtn").addEventListener(
+  "click",
+  () => {
+    if (!gameState) return;
+
+    if (
+      gameState.state === "won"
+    ) {
+      $("startName").value =
+        racer;
+
+      initialiseGame(
+        0,
+        "playing"
+      );
+
+      $("result").hidden =
+        true;
+    } else if (
+      gameState.state ===
+      "complete"
+    ) {
+      initialiseGame(
+        Math.min(
+          9,
+          gameState.level + 1
+        ),
+        "playing"
+      );
+
+      $("result").hidden =
+        true;
+    } else {
+      restartGame();
+    }
+  }
+);
+
+$("flyTouch").addEventListener(
+  "click",
+  toggleFlight
+);
+
+document
+  .querySelectorAll(
+    "[data-key]"
+  )
+  .forEach(button => {
+    const key =
+      button.dataset.key;
+
+    button.addEventListener(
+      "pointerdown",
+      event => {
+        event.preventDefault();
+        keys[key] = true;
+      }
+    );
+
+    const release = () => {
+      keys[key] = false;
+    };
+
+    button.addEventListener(
+      "pointerup",
+      release
+    );
+
+    button.addEventListener(
+      "pointercancel",
+      release
+    );
+
+    button.addEventListener(
+      "pointerleave",
+      release
+    );
+  });
+
+resize();
+
+initialiseGame(
+  0,
+  "menu"
+);
+
+requestAnimationFrame(
+  gameLoop
+);
+})();
+</script>
+</body>
+</html>
